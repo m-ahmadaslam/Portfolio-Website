@@ -1,0 +1,15 @@
+/* TEAM */
+  Developer: Muhammad Ahmad Aslam
+  Role: AI Full-Stack Developer
+  Location: Riyadh, Saudi Arabia
+  GitHub: https://github.com/m-ahmadaslam
+  LinkedIn: https://www.linkedin.com/in/muhammad-ahmad-aslam
+
+/* THANKS */
+  Original design: Sunny Patel (https://github.com/sunnypatell)
+  Adapted with written permission.
+
+/* SITE */
+  Standards: HTML5, CSS3, TypeScript
+  Components: Next.js, React, React Three Fiber, GSAP, Tailwind CSS
+  Software: Next.js App Router, deployed on Vercel

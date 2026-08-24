@@ -1,0 +1,30 @@
+cff-version: 1.2.0
+message: "If you reference this project or its source, please cite it as below."
+title: "Muhammad Ahmad Aslam Portfolio"
+type: software
+authors:
+  - family-names: Aslam
+    given-names: Muhammad Ahmad
+    email: muhammad.ahmadaslam2003@gmail.com
+repository-code: "https://github.com/m-ahmadaslam/ahmadaslam-portfolio-website"
+url: "https://ahmadaslam-portfolio-website.vercel.app"
+abstract: >-
+  Source for Muhammad Ahmad Aslam's personal portfolio: a Next.js 16 / React 19
+  application with an interactive 3D hero and a single typed content source of
+  truth, covering his AI full-stack engineering work and projects. Adapted, with
+  written permission, from the open-sourced portfolio of Sunny Patel.
+keywords:
+  - portfolio
+  - ai-full-stack
+  - nextjs
+  - react
+  - three-js
+  - typescript
+license-url: "https://github.com/m-ahmadaslam/ahmadaslam-portfolio-website/blob/main/LICENSE"
+references:
+  - type: software
+    title: "Sunny Patel Portfolio (original design, used with permission)"
+    authors:
+      - family-names: Patel
+        given-names: Sunny Jayendra
+    url: "https://github.com/sunnypatell/Portfolio"
