@@ -202,17 +202,6 @@ export default async function ProjectDetail({ params }: Props) {
         </div>
       </Container>
 
-      {p.cite && (
-        <Container className="mt-16">
-          <div className="rounded-xl border border-line bg-surface/40 p-6 sm:p-8">
-            <Eyebrow>cite this work</Eyebrow>
-            <p className="mt-4 font-mono text-xs text-muted">
-              Citation details available on request.
-            </p>
-          </div>
-        </Container>
-      )}
-
       <Container className="mt-24 border-t border-line pt-10">
         <Link
           href={`/projects/${next.slug}`}
