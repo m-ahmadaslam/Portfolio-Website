@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import { usePrefersReducedMotion } from "@/lib/hooks";
 
 const SCRIPT = [
-  { t: "$ boot --profile ahmad", c: "text-bone" },
+  { t: "$ boot --profile Ahmad", c: "text-bone" },
   { t: "  frontend .............. ok", c: "text-muted" },
   { t: "  backend ............... ok", c: "text-muted" },
   { t: "  models ................ ok", c: "text-muted" },

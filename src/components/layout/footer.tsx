@@ -10,7 +10,7 @@ export function Footer() {
         <div className="flex flex-col gap-8 sm:flex-row sm:items-start sm:justify-between">
           <div>
             <Link href="/" className="font-mono text-sm text-bone">
-              ahmad<span className="text-ember">.</span>aslam
+              Ahmad<span className="text-ember">.</span>Aslam
             </Link>
             <p className="mt-2 font-mono text-xs text-muted">
               AI full-stack developer, {profile.location}
@@ -61,16 +61,6 @@ export function Footer() {
         <div className="mt-10 flex flex-col gap-2 border-t border-line pt-6 font-mono text-[0.7rem] text-muted sm:flex-row sm:items-center sm:justify-between">
           <span>© {year} Muhammad Ahmad Aslam</span>
           <span>
-            Design based on{" "}
-            <a
-              href="https://github.com/sunnypatell"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-bone-dim underline decoration-line underline-offset-2 transition-colors hover:text-ember"
-            >
-              Sunny Patel&apos;s portfolio
-            </a>
-            , used with permission
           </span>
           <span>Built with Next.js, deployed on Vercel</span>
         </div>

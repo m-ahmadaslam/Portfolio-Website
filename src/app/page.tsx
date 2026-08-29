@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { Hero } from "@/components/home/hero";
+import { Skills } from "@/components/home/skills";
 import { Container, Eyebrow, SectionHeading, ctaClass } from "@/components/ui/primitives";
 import { Reveal } from "@/components/ui/reveal";
 import { ProjectWindow } from "@/components/ui/project-window";
@@ -17,7 +18,8 @@ import {
 export default function Home() {
   const featured = projects
     .filter((p) => p.featured)
-    .sort((a, b) => FEATURED_ORDER.indexOf(a.slug) - FEATURED_ORDER.indexOf(b.slug));
+    .sort((a, b) => FEATURED_ORDER.indexOf(a.slug) - FEATURED_ORDER.indexOf(b.slug))
+    .slice(0, 3);
   return (
     <>
       <Hero />
@@ -56,6 +58,9 @@ export default function Home() {
                     <span className="font-mono text-xs text-muted">{p.year}</span>
                   </div>
                   <p className="mt-1 text-bone-dim">{p.tagline}</p>
+                  <p className="mt-2 text-sm leading-relaxed text-muted line-clamp-2">
+                    {p.oneLiner}
+                  </p>
                   {p.active && (
                     <div className="mt-2.5">
                       <ActivePill />
@@ -90,6 +95,8 @@ export default function Home() {
           </div>
         </Container>
       </section>
+
+      <Skills />
 
       <section className="border-t border-line/60 py-24 sm:py-32">
         <Container className="flex flex-col gap-8 sm:flex-row sm:items-end sm:justify-between">

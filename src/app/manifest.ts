@@ -5,7 +5,7 @@ export default function manifest(): MetadataRoute.Manifest {
     name: "Muhammad Ahmad Aslam · AI Full-Stack Developer",
     short_name: "Ahmad Aslam",
     description:
-      "AI full-stack developer building products with machine learning in the loop, from real-time web to the models underneath.",
+      "AI full-stack developer building end-to-end products and the AI that powers them, from real-time web to the models underneath.",
     start_url: "/",
     display: "standalone",
     background_color: "#0a0a0f",

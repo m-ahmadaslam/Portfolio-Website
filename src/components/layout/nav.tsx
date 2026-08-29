@@ -72,7 +72,7 @@ export function Nav() {
     >
       <nav className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between px-6 sm:px-10">
         <Link href="/" className="font-mono text-sm text-bone" aria-label="Home">
-          ahmad<span className="text-ember">.</span>aslam
+          Ahmad<span className="text-ember">.</span>Aslam
         </Link>
 
         <div className="hidden items-center gap-8 md:flex">

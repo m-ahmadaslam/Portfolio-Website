@@ -86,7 +86,7 @@ export default function ProjectsPage() {
                   {p.summary}
                 </p>
                 <ul className="mt-6 flex flex-wrap gap-2 font-mono text-xs">
-                  {p.stack.slice(0, 6).map((s) => (
+                  {p.stack.slice(0, 8).map((s) => (
                     <li key={s} className="rounded border border-line px-2.5 py-1 text-muted">
                       {s}
                     </li>
@@ -108,7 +108,7 @@ export default function ProjectsPage() {
                       rel="noopener noreferrer"
                       className="text-muted transition-colors hover:text-bone"
                     >
-                      Live
+                      Visit live site
                     </a>
                   )}
                   {p.links.repo && (
@@ -160,7 +160,7 @@ export default function ProjectsPage() {
                 {p.team && (
                   <p className="mt-1 font-mono text-[0.7rem] text-muted">{p.team}</p>
                 )}
-                <p className="mt-3 text-sm leading-relaxed text-bone-dim">
+                <p className="mt-3 text-sm leading-relaxed text-bone-dim line-clamp-4">
                   {p.oneLiner}
                 </p>
                 <span className="mt-4 inline-flex items-center gap-1 font-mono text-xs text-ember">

@@ -21,7 +21,7 @@ export default function WorkPage() {
           as="h1"
           className="mt-6 max-w-3xl font-display text-[2.4rem] font-semibold leading-[1.03] tracking-[-0.025em] text-bone sm:text-5xl"
         >
-          Building full-stack products, with AI in the loop.
+          Building full-stack products, and the AI that powers them.
         </RevealText>
         <p className="mt-6 max-w-xl text-lg leading-relaxed text-bone-dim">
           A path across AI training and evaluation, full-stack product

@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Space_Grotesk, JetBrains_Mono, Inter } from "next/font/google";
+import { Fraunces, JetBrains_Mono, Inter } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 // import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Providers } from "@/components/providers";
@@ -8,8 +8,8 @@ import { Footer } from "@/components/layout/footer";
 import { profile } from "@/content/site";
 import "./globals.css";
 
-// space grotesk for display, jetbrains mono for terminals/labels, inter for body
-const display = Space_Grotesk({
+// fraunces (editorial serif) for display, jetbrains mono for terminals/labels, inter for body
+const display = Fraunces({
   variable: "--font-display-src",
   subsets: ["latin"],
   display: "swap",
@@ -30,7 +30,7 @@ const body = Inter({
 // TODO: update to your custom domain once DNS is live (currently the Vercel URL).
 const siteUrl = "https://ahmadaslam-portfolio-website.vercel.app";
 const description =
-  "Muhammad Ahmad Aslam is an AI full-stack software developer working across the MERN stack, Next.js, and applied machine learning — from real-time AI systems to production web apps. Computer Science graduate based in Riyadh.";
+  "Muhammad Ahmad Aslam is an AI full-stack software developer working across the MERN stack, Next.js, and applied machine learning, from real-time AI systems to production web apps. Computer Science graduate based in Riyadh.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -43,7 +43,7 @@ export const metadata: Metadata = {
     "Muhammad Ahmad Aslam",
     "Ahmad Aslam",
     "AI Full-Stack Developer",
-    "Full-stack Developer",
+    "Full-Stack Developer",
     "MERN",
     "Next.js",
     "Machine Learning",
@@ -62,14 +62,14 @@ export const metadata: Metadata = {
     locale: "en_US",
     title: "Muhammad Ahmad Aslam · AI Full-Stack Developer",
     description:
-      "AI full-stack developer across the MERN stack, Next.js, and applied machine learning — from real-time AI systems to production web apps.",
+      "AI full-stack developer across the MERN stack, Next.js, and applied machine learning, from real-time AI systems to production web apps.",
     siteName: "Muhammad Ahmad Aslam",
     images: [
       {
         url: "/og-image.png",
         width: 2560,
         height: 1280,
-        alt: "Muhammad Ahmad Aslam — AI full-stack software developer",
+        alt: "Muhammad Ahmad Aslam, AI full-stack software developer",
       },
     ],
   },
@@ -77,7 +77,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Muhammad Ahmad Aslam · AI Full-Stack Developer",
     description:
-      "AI full-stack developer across the MERN stack, Next.js, and applied machine learning — from real-time AI systems to production web apps.",
+      "AI full-stack developer across the MERN stack, Next.js, and applied machine learning, from real-time AI systems to production web apps.",
     images: ["/og-image.png"],
   },
 };

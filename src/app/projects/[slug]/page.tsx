@@ -38,7 +38,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
           url: "/og-image.png",
           width: 2560,
           height: 1280,
-          alt: "Muhammad Ahmad Aslam, AI full-stack developer building products with AI in the loop",
+          alt: "Muhammad Ahmad Aslam, AI full-stack software developer",
         },
       ],
     },
@@ -101,7 +101,7 @@ export default async function ProjectDetail({ params }: Props) {
               rel="noopener noreferrer"
               className="group inline-flex items-center gap-1.5 text-ember transition-colors hover:text-ember-bright"
             >
-              Live
+              Visit live site
               <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
             </a>
           )}

@@ -9,9 +9,15 @@ import { Magnetic } from "@/components/motion/magnetic";
 import { BootSequence } from "@/components/ui/boot-sequence";
 import { ScrollCue } from "@/components/ui/scroll-cue";
 import { LazyDevice } from "@/components/three/lazy-device";
+import { AvatarBubble } from "@/components/home/avatar-bubble";
 import { profile } from "@/content/site";
 
 export function Hero() {
+  // ═══════════════ HERO VISUAL SIZE CONTROLS (edit these 3 numbers) ═══════════════
+  const AVATAR_SIZE = 180; // px — circular video diameter; its play/mute buttons scale with it
+  const MODEL_HEIGHT = "70vh"; // 3D model height, independent of the video (e.g. "60vh" or "520px")
+  const GAP = "4.5rem"; // vertical space between the video and the 3D model
+  // ════════════════════════════════════════════════════════════════════════════════
   return (
     <section className="relative isolate overflow-hidden">
       <div
@@ -35,10 +41,10 @@ export function Hero() {
 
           <RevealText
             as="h1"
-            className="mt-7 text-balance font-display text-[3.1rem] font-semibold leading-[0.95] tracking-[-0.035em] text-bone sm:text-[4.1rem] lg:text-[4.7rem]"
+            className="mt-7 text-balance font-display text-[2.3rem] font-semibold leading-[1.03] tracking-[-0.03em] text-bone sm:text-[2.9rem] lg:text-[3.4rem]"
           >
-            I build full-stack products, with{" "}
-            <span className="text-ember">AI in the loop.</span>
+            I build full-stack products,{" "}
+            <span className="text-ember">and the AI that powers them.</span>
           </RevealText>
 
           <p className="mt-7 max-w-md text-[1.02rem] leading-relaxed text-bone-dim sm:text-lg">
@@ -71,8 +77,31 @@ export function Hero() {
           </div>
         </div>
 
-        <div className="relative h-[40vh] min-h-[300px] w-full lg:h-[80vh]">
-          <LazyDevice poster="/assets/hero-poster.webp" />
+        {/* right column: circular video on top, 3D model below. The two are sized
+            INDEPENDENTLY — AVATAR_SIZE, MODEL_HEIGHT and GAP above each control one thing. */}
+        <div className="flex flex-col items-center" style={{ gap: GAP }}>
+          {/* z-10 keeps the video (and its buttons) above the canvas below */}
+          <div className="relative z-10">
+            <AvatarBubble size={AVATAR_SIZE} />
+          </div>
+          {/* feather ALL FOUR edges into the page so the model floats with no visible
+              rectangle: two linear masks (vertical + horizontal) intersected keep the
+              centre fully opaque and fade every edge to transparent. The canvas itself
+              is fully transparent (see pc-scene), so what fades here is only bloom haze. */}
+          <div
+            className="relative w-full"
+            style={{
+              height: MODEL_HEIGHT,
+              WebkitMaskImage:
+                "linear-gradient(to bottom, transparent 0%, #000 8%, #000 92%, transparent 100%), linear-gradient(to right, transparent 0%, #000 8%, #000 92%, transparent 100%)",
+              WebkitMaskComposite: "source-in",
+              maskImage:
+                "linear-gradient(to bottom, transparent 0%, #000 8%, #000 92%, transparent 100%), linear-gradient(to right, transparent 0%, #000 8%, #000 92%, transparent 100%)",
+              maskComposite: "intersect",
+            }}
+          >
+            <LazyDevice poster="/assets/hero-poster-neural.webp" />
+          </div>
         </div>
       </Container>
       <ScrollCue />
