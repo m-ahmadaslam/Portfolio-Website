@@ -5,7 +5,7 @@ import { navLinks, profile } from "@/content/site";
 export function Footer() {
   const year = new Date().getFullYear();
   return (
-    <footer className="border-t border-line py-12">
+    <footer className="border-t border-line py-12 sm:py-14">
       <Container>
         <div className="flex flex-col gap-8 sm:flex-row sm:items-start sm:justify-between">
           <div>
@@ -32,7 +32,7 @@ export function Footer() {
             ))}
           </nav>
 
-          <div className="flex gap-5 font-mono text-xs">
+          <div className="flex flex-wrap gap-x-5 gap-y-2 font-mono text-xs">
             <a
               href={profile.socials.github}
               target="_blank"
@@ -60,8 +60,6 @@ export function Footer() {
 
         <div className="mt-10 flex flex-col gap-2 border-t border-line pt-6 font-mono text-[0.7rem] text-muted sm:flex-row sm:items-center sm:justify-between">
           <span>© {year} Muhammad Ahmad Aslam</span>
-          <span>
-          </span>
           <span>Built with Next.js, deployed on Vercel</span>
         </div>
       </Container>

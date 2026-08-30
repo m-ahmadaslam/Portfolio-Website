@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 export default function ContactPage() {
   return (
     <div className="flex min-h-dvh items-center pt-32 pb-24">
-      <Container className="w-full">
+      <Container className="w-full min-w-0">
         <Eyebrow>contact</Eyebrow>
         <RevealText
           as="h1"
@@ -27,20 +27,20 @@ export default function ContactPage() {
         </RevealText>
 
         <div className="mt-12 grid gap-14 lg:grid-cols-2 lg:gap-20">
-          <div>
+          <div className="min-w-0">
             <p className="max-w-md text-lg leading-relaxed text-bone-dim">
               Open to full-stack and AI engineering roles, and problems worth
               the effort. The fastest way to reach me is right here.
             </p>
 
             <div className="mt-9">
-              <Magnetic>
+              <Magnetic className="max-w-full">
                 <a
                   href={`mailto:${profile.email}`}
-                  className="inline-flex items-center gap-3 font-display text-xl text-bone transition-colors hover:text-ember sm:text-2xl"
+                  className="inline-flex max-w-full items-center gap-3 font-display text-[0.95rem] text-bone transition-colors hover:text-ember sm:text-xl lg:text-2xl"
                 >
-                  <Mail className="h-5 w-5 text-ember" />
-                  {profile.email}
+                  <Mail className="h-5 w-5 shrink-0 text-ember" />
+                  <span className="break-all">{profile.email}</span>
                 </a>
               </Magnetic>
             </div>

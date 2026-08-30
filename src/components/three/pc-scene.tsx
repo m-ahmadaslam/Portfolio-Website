@@ -1,6 +1,6 @@
 "use client";
 
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Center, Environment, Lightformer, OrbitControls, useGLTF } from "@react-three/drei";
 import {
   EffectComposer,
@@ -15,9 +15,18 @@ const URL = "/models/central-brain.glb?v=3"; // v3: Draco geometry compression (
 
 const TARGET_SIZE = 2.4; // normalized max dimension (world units) before the responsive multiplier
 
-function Model({ scale, onReady }: { scale: number; onReady?: () => void }) {
+function Model({
+  scale,
+  onReady,
+  isTouch = false,
+}: {
+  scale: number;
+  onReady?: () => void;
+  isTouch?: boolean;
+}) {
   const ref = useRef<Group>(null);
   const { scene } = useGLTF(URL);
+  const gl = useThree((s) => s.gl);
 
   // The sculpture's geometry stays exactly as authored, but its glass is near-black at
   // low opacity and disappears against the dark hero. Lift it once on load: a violet
@@ -77,11 +86,62 @@ function Model({ scale, onReady }: { scale: number; onReady?: () => void }) {
     return () => cancelAnimationFrame(id);
   }, []);
 
-  // slow idle rotation so the sculpture reads as alive without spinning away
-  useFrame((state) => {
+  // touch: drag the sculpture with a finger. desktop keeps OrbitControls (which orbits the
+  // camera, not the model), so this finger-spin is touch-only. `touch-action: pan-y` on the
+  // canvas (set in onCreated) means a vertical swipe still scrolls the page.
+  const drag = useRef(false);
+  const velY = useRef(0);
+  const lastX = useRef(0);
+
+  useEffect(() => {
+    if (!isTouch) return;
+    const el = gl.domElement;
+    const K = 0.006; // radians per pixel dragged
+    const onDown = (e: PointerEvent) => {
+      drag.current = true;
+      lastX.current = e.clientX;
+      el.setPointerCapture(e.pointerId);
+    };
+    const onMove = (e: PointerEvent) => {
+      if (!drag.current || !ref.current) return;
+      const dx = (e.clientX - lastX.current) * K;
+      lastX.current = e.clientX;
+      ref.current.rotation.y += dx;
+      velY.current = dx;
+    };
+    const onUp = (e: PointerEvent) => {
+      drag.current = false;
+      try {
+        el.releasePointerCapture(e.pointerId);
+      } catch {
+        /* already released */
+      }
+    };
+    el.addEventListener("pointerdown", onDown);
+    el.addEventListener("pointermove", onMove);
+    el.addEventListener("pointerup", onUp);
+    el.addEventListener("pointercancel", onUp);
+    return () => {
+      el.removeEventListener("pointerdown", onDown);
+      el.removeEventListener("pointermove", onMove);
+      el.removeEventListener("pointerup", onUp);
+      el.removeEventListener("pointercancel", onUp);
+    };
+  }, [gl, isTouch]);
+
+  // slow idle rotation so the sculpture reads as alive without spinning away. on touch the
+  // idle drift is additive (so a finger-drag isn't fought), with a little release inertia.
+  useFrame((state, delta) => {
     const g = ref.current;
     if (!g) return;
-    g.rotation.y = state.clock.elapsedTime * 0.2;
+    if (isTouch) {
+      if (!drag.current) {
+        g.rotation.y += velY.current + delta * 0.2;
+        velY.current *= 0.94;
+      }
+    } else {
+      g.rotation.y = state.clock.elapsedTime * 0.2;
+    }
   });
 
   return (
@@ -151,7 +211,7 @@ export default function PcScene({
       </Environment>
 
       <Suspense fallback={null}>
-        <Model scale={scale} onReady={onReady} />
+        <Model scale={scale} onReady={onReady} isTouch={isTouch} />
       </Suspense>
 
       {!isTouch && (

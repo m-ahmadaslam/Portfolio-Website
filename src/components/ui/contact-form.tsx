@@ -158,9 +158,9 @@ export function ContactForm() {
   }
 
   return (
-    <form onSubmit={onSubmit} className="space-y-5" noValidate>
+    <form onSubmit={onSubmit} className="min-w-0 space-y-5" noValidate>
       <div className="grid gap-5 sm:grid-cols-2">
-        <div className="space-y-2">
+        <div className="min-w-0 space-y-2">
           <label htmlFor="name" className={label}>
             Name <span aria-hidden="true" className="text-ember">*</span>
           </label>
@@ -180,7 +180,7 @@ export function ContactForm() {
             </span>
           )}
         </div>
-        <div className="space-y-2">
+        <div className="min-w-0 space-y-2">
           <label htmlFor="email" className={label}>
             Email <span aria-hidden="true" className="text-ember">*</span>
           </label>
