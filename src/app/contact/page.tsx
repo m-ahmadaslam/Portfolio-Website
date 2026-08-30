@@ -23,7 +23,7 @@ export default function ContactPage() {
           as="h1"
           className="mt-6 font-display text-[3rem] font-semibold leading-[0.95] tracking-[-0.03em] text-bone sm:text-[4.2rem]"
         >
-          Let&apos;s build something.
+          Let&apos;s build <span className="text-gradient-violet">something.</span>
         </RevealText>
 
         <div className="mt-12 grid gap-14 lg:grid-cols-2 lg:gap-20">

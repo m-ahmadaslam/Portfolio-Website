@@ -30,7 +30,7 @@ export default function Home() {
             <div>
               <Eyebrow>selected work</Eyebrow>
               <SectionHeading className="mt-5 max-w-xl">
-                Built to be used, not demoed.
+                Built to be <span className="text-gradient-violet">used</span>, not demoed.
               </SectionHeading>
             </div>
             <Link
@@ -84,7 +84,7 @@ export default function Home() {
                     <span className="font-mono text-xs text-ember tabular-nums">
                       {String(i + 1).padStart(2, "0")}
                     </span>
-                    {c.title}
+                    <span className="text-gradient-violet">{c.title}</span>
                   </h2>
                   <p className="text-[0.97rem] leading-relaxed text-bone-dim">
                     {c.body}
@@ -103,7 +103,8 @@ export default function Home() {
           <div>
             <Eyebrow>currently</Eyebrow>
             <h2 className="mt-5 max-w-xl font-display text-2xl font-semibold tracking-tight text-bone sm:text-3xl">
-              {experiences[0].role} at {experiences[0].company}.
+              <span className="text-gradient-violet">{experiences[0].role}</span> at{" "}
+              <span className="text-gradient-violet">{experiences[0].company}</span>.
             </h2>
             <p className="mt-3 max-w-md text-bone-dim">{experiences[0].summary}</p>
           </div>
@@ -121,7 +122,7 @@ export default function Home() {
         <Container className="text-center">
           <Reveal>
             <SectionHeading className="mx-auto max-w-2xl">
-              Have something worth building?
+              Have something worth <span className="text-gradient-violet">building</span>?
             </SectionHeading>
           </Reveal>
           <p className="mx-auto mt-5 max-w-md text-bone-dim">

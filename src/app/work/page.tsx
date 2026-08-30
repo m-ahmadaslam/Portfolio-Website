@@ -21,7 +21,8 @@ export default function WorkPage() {
           as="h1"
           className="mt-6 max-w-3xl font-display text-[2.4rem] font-semibold leading-[1.03] tracking-[-0.025em] text-bone sm:text-5xl"
         >
-          Building full-stack products, and the AI that powers them.
+          Building full-stack products,{" "}
+          <span className="text-gradient-violet">and the AI that powers them.</span>
         </RevealText>
         <p className="mt-6 max-w-xl text-lg leading-relaxed text-bone-dim">
           A path across AI training and evaluation, full-stack product
@@ -37,8 +38,8 @@ export default function WorkPage() {
       <Container className="mt-20 grid gap-12 border-t border-line pt-14 pb-28 lg:grid-cols-2">
         <Reveal>
           <Eyebrow>education</Eyebrow>
-          <h2 className="mt-5 font-display text-xl font-semibold text-bone">
-            {education.program}
+          <h2 className="mt-5 font-display text-xl font-semibold">
+            <span className="text-gradient-violet">{education.program}</span>
           </h2>
           <p className="mt-1.5 font-mono text-sm text-muted">
             {education.school} · {education.start}–{education.end} ·{" "}

@@ -32,7 +32,8 @@ export default function ProjectsPage() {
           as="h1"
           className="mt-6 max-w-3xl font-display text-[2.4rem] font-semibold leading-[1.03] tracking-[-0.025em] text-bone sm:text-5xl"
         >
-          Things I&apos;ve built, end to end.
+          Things I&apos;ve built,{" "}
+          <span className="text-gradient-violet">end to end</span>.
         </RevealText>
         <p className="mt-6 max-w-xl text-lg leading-relaxed text-bone-dim">
           Real-time AI, a live storefront with paying customers, and backend systems

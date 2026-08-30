@@ -190,6 +190,24 @@ body {
   }
 }
 
+/* ── luminous violet display accent ─────────────────────────────── */
+/* A near-white → lavender → electric-violet gradient clipped to the glyphs, so
+   large display words read as "purple, with light living inside the letters."
+   Reserved for big headings; inline body emphasis stays a flat solid ember so
+   the page keeps a clear hierarchy instead of everything shouting at once. */
+.text-gradient-violet {
+  background-image: linear-gradient(
+    102deg,
+    color-mix(in srgb, var(--color-bone) 82%, var(--color-ember-bright)) 0%,
+    var(--color-ember-bright) 44%,
+    var(--color-ember) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent; /* Safari needs this for the fill to clip */
+}
+
 /* ── accessibility helpers ──────────────────────────────────────── */
 .sr-only {
   position: absolute;
@@ -237,6 +255,11 @@ body {
   }
   body {
     background: #fff;
+    color: #000;
+  }
+  /* the clipped-gradient accent has a transparent fill — force it solid for print */
+  .text-gradient-violet {
+    -webkit-text-fill-color: #000;
     color: #000;
   }
 }

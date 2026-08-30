@@ -10,6 +10,7 @@ import { BootSequence } from "@/components/ui/boot-sequence";
 import { ScrollCue } from "@/components/ui/scroll-cue";
 import { LazyDevice } from "@/components/three/lazy-device";
 import { AvatarBubble } from "@/components/home/avatar-bubble";
+import { ThalamusLabel } from "@/components/home/thalamus-label";
 import { profile } from "@/content/site";
 
 export function Hero() {
@@ -39,12 +40,17 @@ export function Hero() {
             {profile.status.available}
           </div>
 
+          <p className="mt-6 font-display text-xl font-semibold tracking-tight sm:text-2xl">
+            <span className="text-bone-dim">I&apos;m </span>
+            <span className="text-gradient-violet">{profile.name}</span>
+          </p>
+
           <RevealText
             as="h1"
             className="mt-7 text-balance font-display text-[2.3rem] font-semibold leading-[1.03] tracking-[-0.03em] text-bone sm:text-[2.9rem] lg:text-[3.4rem]"
           >
             I build full-stack products,{" "}
-            <span className="text-ember">and the AI that powers them.</span>
+            <span className="text-gradient-violet">and the AI that powers them.</span>
           </RevealText>
 
           <p className="mt-7 max-w-md text-[1.02rem] leading-relaxed text-bone-dim sm:text-lg">
@@ -84,23 +90,30 @@ export function Hero() {
           <div className="relative z-10">
             <AvatarBubble size={AVATAR_SIZE} />
           </div>
-          {/* feather ALL FOUR edges into the page so the model floats with no visible
-              rectangle: two linear masks (vertical + horizontal) intersected keep the
-              centre fully opaque and fade every edge to transparent. The canvas itself
-              is fully transparent (see pc-scene), so what fades here is only bloom haze. */}
-          <div
-            className="relative w-full"
-            style={{
-              height: MODEL_HEIGHT,
-              WebkitMaskImage:
-                "linear-gradient(to bottom, transparent 0%, #000 8%, #000 92%, transparent 100%), linear-gradient(to right, transparent 0%, #000 8%, #000 92%, transparent 100%)",
-              WebkitMaskComposite: "source-in",
-              maskImage:
-                "linear-gradient(to bottom, transparent 0%, #000 8%, #000 92%, transparent 100%), linear-gradient(to right, transparent 0%, #000 8%, #000 92%, transparent 100%)",
-              maskComposite: "intersect",
-            }}
-          >
-            <LazyDevice poster="/assets/hero-poster-neural.webp" />
+          {/* Relative wrapper holds two layers: the feathered 3D model, and the crisp
+              Thalamus annotation on top. The annotation lives OUTSIDE the masked div so
+              its text never gets feathered, and it is pointer-events-none so orbit-drag
+              on the canvas underneath still works. */}
+          <div className="relative w-full" style={{ height: MODEL_HEIGHT }}>
+            {/* Feather ALL FOUR edges into the page so the model floats with no visible
+                rectangle: two linear masks (vertical + horizontal) intersected keep the
+                centre opaque and dissolve every edge to transparent. Widened to ~13% for a
+                softer merge; the canvas itself is transparent (see pc-scene), so what fades
+                here is only faint bloom haze at the edges. */}
+            <div
+              className="absolute inset-0"
+              style={{
+                WebkitMaskImage:
+                  "linear-gradient(to bottom, transparent 0%, #000 13%, #000 87%, transparent 100%), linear-gradient(to right, transparent 0%, #000 13%, #000 87%, transparent 100%)",
+                WebkitMaskComposite: "source-in",
+                maskImage:
+                  "linear-gradient(to bottom, transparent 0%, #000 13%, #000 87%, transparent 100%), linear-gradient(to right, transparent 0%, #000 13%, #000 87%, transparent 100%)",
+                maskComposite: "intersect",
+              }}
+            >
+              <LazyDevice poster="/assets/hero-poster-neural.webp" />
+            </div>
+            <ThalamusLabel />
           </div>
         </div>
       </Container>

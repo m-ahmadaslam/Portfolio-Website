@@ -28,10 +28,34 @@ export const profile = {
 } as const;
 
 export const about = {
-  lead: "I build software across the whole stack, from the interface people touch to the models and services running underneath it.",
+  // Segmented so the two thesis phrases render in the luminous violet display accent
+  // (.text-gradient-violet) while the rest stays bone — same treatment as the home hero,
+  // one source of truth. "hot" marks a segment for the gradient.
+  lead: [
+    { t: "I'm not here to be one more competent developer. I build products, and " },
+    { t: "the AI that runs them", hot: true },
+    { t: ", to a standard that outlasts the demo, and I'm building toward being " },
+    { t: "the founder who ships them", hot: true },
+    { t: "." },
+  ],
   paragraphs: [
-    "Most of what I build is meant to be used, not demoed. **Listen**, my final-year project, is a real-time Pakistan Sign Language recognizer that streams camera frames to a model over WebSocket and returns a word in under 200ms, at **98.16% accuracy** across 64 sign classes. Independent AI judges graded it **Gold**, the highest tier, through the **Kanz AI** initiative, the same cohort that set a **Guinness World Record** for the largest AI training session. **Zero Limit Apparel**, the e-commerce brand I founded, has been in live production with real customers and real orders, not a demo store. I care about the part that comes after launch, because the thing still has to work next week.",
-    "The range is the point. At **Turing** I work with a leading **Frontier AI Lab** to improve agent capability: I build Python backend connectors that replicate tools like Slack and Jira, validated through Docker test suites, design and calibrate the evaluation tasks used to grade coding agents against verified ground truth, and fine-tune frontier models through RLHF and SFT while mentoring a small team of AI trainers. Before that I shipped full-stack features and 10+ authenticated REST APIs inside a production MERN codebase at **Wamo Labs**, and built machine-learning and financial-modeling dashboards at **Alfanar**. I'm a **Computer Science graduate**, and I move between product code and applied ML without treating either as someone else's job.",
+    "Start with **Listen**, my final-year project: a real-time Pakistan Sign Language recognizer that streams camera frames to a model over WebSocket and returns a word in **under 200ms**, at **98.16% accuracy** across **64 sign classes**. Independent AI judges graded it **Gold**, the highest tier, through the **Kanz AI** cohort that set a **Guinness World Record** for the largest AI training session. It was a three-person project, and I owned the model and the real-time serving path end to end. That is the bar I hold everything to: accurate is not enough if it is slow, and shipped is not enough if it breaks next week.",
+    "The range is deliberate. At **Turing** I work with a leading **Frontier AI Lab** to push agent capability: I build Python connectors that replicate tools like Slack and Jira, calibrate the evaluations that grade coding agents against verified ground truth, fine-tune frontier models through **RLHF and SFT**, and mentor a team of five. Before that I shipped **10+ authenticated REST APIs** inside a production MERN codebase at **Wamo Labs**, and at **Alfanar** I turned an **85,569-field** Excel model into a live Next.js and FastAPI dashboard with an AI analyst on top. I move between product code and applied ML without treating either as someone else's job.",
+    "And I build for myself, too. **Zero Limit Apparel** is a brand I founded and run in live production, with real customers, real orders, and real revenue, because I wanted to own the commercial outcome and not only the code. The plan was never to blend in. It is to build things people depend on, and to become the founder who puts them in the world.",
+  ],
+  interests: [
+    {
+      name: "Chess",
+      note: "I play for the same reason I like hard systems: it rewards thinking several moves ahead and punishes the lazy line.",
+    },
+    {
+      name: "Football",
+      note: "Keeps me sharp on what solo work can't teach: reading a team, moving without the ball, and winning as a unit.",
+    },
+    {
+      name: "Debating",
+      note: "Competitive debating taught me to build an argument, defend it under pressure, and change my mind when the evidence earns it.",
+    },
   ],
   now: [
     "Improving agent capability for a Frontier AI Lab through Turing, across connectors, evaluation, and RLHF/SFT",
@@ -42,7 +66,7 @@ export const about = {
     { k: "Based in", v: "Riyadh, Saudi Arabia" },
     { k: "Currently", v: "AI Software Engineer at Turing (Contract)" },
     { k: "Education", v: "BSc Computer Science, Bahria University" },
-    { k: "Focus", v: "AI full-stack, applied ML, agentic AI" },
+    { k: "Focus", v: "AI full-stack Development, Applied ML, Agentic AI/ AI Agents" },
   ],
 } as const;
 
@@ -360,19 +384,79 @@ export const FEATURED_ORDER = ["listen", "antibiotic-classifier", "market-craft"
 export const skills: { group: string; items: string[] }[] = [
   {
     group: "Languages",
-    items: ["TypeScript", "JavaScript", "Python", "C++", "SQL"],
+    items: ["JavaScript", "TypeScript", "Python", "C++", "SQL", "HTML5 / CSS3"],
   },
   {
-    group: "Web & product",
-    items: ["React", "Next.js", "Node", "Express", "Tailwind", "FastAPI", "Flutter"],
+    group: "Frameworks & Libraries",
+    items: [
+      "React",
+      "Next.js",
+      "Node.js",
+      "Express",
+      "Redux",
+      "Tailwind CSS",
+      "FastAPI",
+      "Flutter",
+      "REST APIs",
+      "WebSockets",
+      "JWT",
+      "RBAC",
+    ],
   },
   {
-    group: "Data & DevOps",
-    items: ["PostgreSQL", "MongoDB", "Supabase", "Neon", "Docker", "Kubernetes", "CI/CD", "Vercel"],
+    group: "Databases & DevOps",
+    items: [
+      "PostgreSQL",
+      "MySQL",
+      "MongoDB",
+      "Supabase",
+      "Neon",
+      "Sequelize ORM",
+      "Docker",
+      "Kubernetes",
+      "CI/CD",
+      "Git / GitHub",
+      "Vercel",
+      "Railway",
+    ],
   },
   {
     group: "AI & ML",
-    items: ["TensorFlow", "MediaPipe", "Scikit-learn", "XGBoost", "Hugging Face", "RAG", "LangChain", "LangGraph", "RLHF / SFT"],
+    items: [
+      "TensorFlow",
+      "TFLite",
+      "MediaPipe",
+      "Computer Vision",
+      "scikit-learn",
+      "XGBoost",
+      "NumPy",
+      "Hugging Face",
+      "OpenAI API",
+      "Claude",
+    ],
+  },
+  {
+    group: "Agentic AI",
+    items: [
+      "RAG",
+      "LangChain",
+      "LangGraph",
+      "MCP",
+      "AI Agents",
+      "n8n",
+      "RLHF",
+      "SFT",
+      "Prompt Engineering",
+    ],
+  },
+  {
+    group: "Methodologies",
+    items: [
+      "Agile / Scrum",
+      "Code Reviews",
+      "Full-Stack Development",
+      "Cross-Functional Collaboration",
+    ],
   },
 ];
 

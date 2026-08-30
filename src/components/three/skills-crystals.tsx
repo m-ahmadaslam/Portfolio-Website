@@ -97,7 +97,7 @@ function makeLogoTexture(src: string | undefined): CanvasTexture | null {
   img.onload = () => {
     // Simple Icons are square (24×24 viewBox), so draw into a centred square box —
     // this sidesteps browsers that report 0 natural size for attribute-less SVGs.
-    const box = s * 0.7;
+    const box = s * 0.8;
     const offset = (s - box) / 2;
     ctx.clearRect(0, 0, s, s);
     ctx.drawImage(img, offset, offset, box, box);
@@ -133,16 +133,20 @@ function makeCoreTexture(): CanvasTexture {
   return toTexture(canvas);
 }
 
-// even point distribution on a sphere (fibonacci lattice) so the cells read as a
-// balanced cluster rather than a random clump.
-function fibonacciSphere(n: number, radius: number): [number, number, number][] {
+// even angular spread (fibonacci lattice), but with per-cell distance jitter so the cluster
+// fills its interior instead of reading as a hollow shell with a hole punched in the middle.
+// most cells stay near the outer radius; a handful get pulled inward (skewed by f²) to seed
+// the centre so it never looks empty.
+function fibonacciCluster(n: number, rMin: number, rMax: number): [number, number, number][] {
   const pts: [number, number, number][] = [];
   const phi = Math.PI * (3 - Math.sqrt(5));
   for (let i = 0; i < n; i++) {
     const y = 1 - (i / Math.max(n - 1, 1)) * 2;
     const r = Math.sqrt(Math.max(0, 1 - y * y));
     const theta = phi * i;
-    pts.push([Math.cos(theta) * r * radius, y * radius, Math.sin(theta) * r * radius]);
+    const f = (i * 0.61803398875) % 1; // golden-ratio low-discrepancy value in [0,1)
+    const rad = rMax - (rMax - rMin) * f * f; // f² keeps most cells outer, a few near centre
+    pts.push([Math.cos(theta) * r * rad, y * rad, Math.sin(theta) * r * rad]);
   }
   return pts;
 }
@@ -257,13 +261,13 @@ function Crystal({
             />
           </mesh>
           {logoTex && (
-            <mesh ref={logoMesh} position={[0, radius * 0.32, 0]} renderOrder={3}>
-              <planeGeometry args={[radius * 0.62, radius * 0.62]} />
+            <mesh ref={logoMesh} position={[0, radius * 0.42, 0]} renderOrder={3}>
+              <planeGeometry args={[radius * 0.82, radius * 0.82]} />
               <meshBasicMaterial map={logoTex} transparent depthWrite={false} depthTest={false} toneMapped={false} />
             </mesh>
           )}
-          <mesh ref={labelMesh} position={[0, logoTex ? -radius * 0.32 : 0, 0]} renderOrder={4}>
-            <planeGeometry args={[radius * 1.24, radius * 0.62]} />
+          <mesh ref={labelMesh} position={[0, logoTex ? -radius * 0.35 : 0, 0]} renderOrder={4}>
+            <planeGeometry args={[radius * 1.5, radius * 0.75]} />
             <meshBasicMaterial map={labelTex} transparent depthWrite={false} depthTest={false} toneMapped={false} />
           </mesh>
         </Billboard>
@@ -388,7 +392,7 @@ function Constellation({ reduced }: { reduced: boolean }) {
     };
   }, [geometry, edges, material, edgeMaterial, coreTex]);
 
-  const positions = useMemo(() => fibonacciSphere(skillOrbs.length, 2.7), []);
+  const positions = useMemo(() => fibonacciCluster(skillOrbs.length, 1.3, 2.8), []);
 
   return (
     <group ref={group}>

@@ -87,7 +87,7 @@ export default async function ProjectDetail({ params }: Props) {
           as="h1"
           className="mt-4 font-display text-[2.8rem] font-semibold leading-[0.98] tracking-[-0.03em] text-bone sm:text-6xl"
         >
-          {p.name}
+          <span className="text-gradient-violet">{p.name}</span>
         </RevealText>
         <p className="mt-5 max-w-2xl text-lg leading-relaxed text-bone-dim sm:text-xl">
           {p.oneLiner}

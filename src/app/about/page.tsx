@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
+import { Fragment } from "react";
 import Image from "next/image";
 import { Container, Eyebrow } from "@/components/ui/primitives";
 import { RevealText } from "@/components/motion/reveal-text";
 import { Reveal } from "@/components/ui/reveal";
 import { RichText } from "@/components/ui/rich-text";
-import { about, skills } from "@/content/site";
+import { ReadMore } from "@/components/ui/read-more";
+import { SkillsGrid } from "@/components/ui/skills-grid";
+import { about, profile } from "@/content/site";
 
 export const metadata: Metadata = {
   title: "About",
@@ -53,60 +56,80 @@ export default function AboutPage() {
           </div>
 
           <div>
+            <div className="mb-5">
+              <p className="font-display text-xl font-semibold tracking-tight text-bone sm:text-2xl">
+                <span className="text-gradient-violet">{profile.name}</span>
+              </p>
+              <p className="mt-1 font-mono text-sm text-muted">{profile.role}</p>
+            </div>
             <RevealText
               as="h1"
               className="max-w-2xl font-display text-[2rem] font-semibold leading-[1.08] tracking-[-0.02em] text-bone sm:text-[2.6rem]"
             >
-              {about.lead}
+              {about.lead.map((s, i) =>
+                "hot" in s && s.hot ? (
+                  <span key={i} className="text-gradient-violet">
+                    {s.t}
+                  </span>
+                ) : (
+                  <Fragment key={i}>{s.t}</Fragment>
+                )
+              )}
             </RevealText>
 
-            <div className="mt-8 space-y-5 text-lg leading-relaxed text-bone-dim">
-              {about.paragraphs.map((p, i) => (
-                <Reveal key={i} delay={i * 0.05}>
-                  <p>
+            <div className="mt-8 text-lg leading-relaxed text-bone-dim">
+              <Reveal>
+                <p>
+                  <RichText text={about.paragraphs[0]} />
+                </p>
+              </Reveal>
+
+              <ReadMore>
+                {about.paragraphs.slice(1).map((p, i) => (
+                  <p key={i} className={i > 0 ? "mt-5" : undefined}>
                     <RichText text={p} />
                   </p>
-                </Reveal>
-              ))}
-            </div>
-
-            <div className="mt-12">
-              <Eyebrow>now</Eyebrow>
-              <ul className="mt-4 space-y-2.5">
-                {about.now.map((n) => (
-                  <li
-                    key={n}
-                    className="flex gap-3 text-[0.97rem] leading-relaxed text-bone-dim"
-                  >
-                    <span className="mt-2 h-px w-3 shrink-0 bg-ember/60" />
-                    {n}
-                  </li>
                 ))}
-              </ul>
+
+                <div className="mt-12">
+                  <Eyebrow>now</Eyebrow>
+                  <ul className="mt-4 space-y-2.5">
+                    {about.now.map((n) => (
+                      <li
+                        key={n}
+                        className="flex gap-3 text-[0.97rem] leading-relaxed text-bone-dim"
+                      >
+                        <span className="mt-2 h-px w-3 shrink-0 bg-ember/60" />
+                        {n}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </ReadMore>
             </div>
           </div>
         </div>
 
         <div className="mt-20 border-t border-line pt-14">
           <Eyebrow>tools I reach for</Eyebrow>
-          <div className="mt-8 grid gap-x-10 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
-            {skills.map((g) => (
-              <div key={g.group}>
-                <h2 className="flex items-center gap-2.5 font-mono text-xs uppercase tracking-[0.18em] text-bone">
-                  <span className="h-px w-4 bg-ember" />
-                  {g.group}
-                </h2>
-                <ul className="mt-4 flex flex-wrap gap-2 font-mono text-[0.78rem]">
-                  {g.items.map((it) => (
-                    <li
-                      key={it}
-                      className="rounded-sm bg-surface px-2.5 py-1 text-bone-dim"
-                    >
-                      {it}
-                    </li>
-                  ))}
-                </ul>
-              </div>
+          <SkillsGrid />
+        </div>
+
+        <div className="mt-20 border-t border-line pt-14">
+          <Eyebrow>beyond code</Eyebrow>
+          <div className="mt-8 grid gap-5 sm:grid-cols-3">
+            {about.interests.map((it, i) => (
+              <Reveal key={it.name} delay={i * 0.06}>
+                <div className="group h-full rounded-[var(--radius)] border border-line bg-surface/50 p-5 transition-colors duration-300 hover:border-ember/40">
+                  <h3 className="flex items-center gap-2.5 font-display text-lg font-semibold">
+                    <span className="h-px w-4 bg-ember transition-all duration-300 group-hover:w-6" />
+                    <span className="text-gradient-violet">{it.name}</span>
+                  </h3>
+                  <p className="mt-2.5 text-[0.9rem] leading-relaxed text-muted">
+                    {it.note}
+                  </p>
+                </div>
+              </Reveal>
             ))}
           </div>
         </div>

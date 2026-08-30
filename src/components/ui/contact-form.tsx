@@ -117,30 +117,43 @@ export function ContactForm() {
     try {
       const token = await getToken();
       // superset of common template var names so it maps to any emailjs template
-      await emailjs.send(
-        SERVICE_ID,
-        TEMPLATE_ID,
-        {
-          name: data.name,
-          from_name: data.name,
-          to_name: "Muhammad Ahmad Aslam",
-          email: data.email,
-          from_email: data.email, // the var the actual template reads; without it the email came through empty
-          reply_to: data.email,
-          user_email: data.email,
-          to_email: "muhammad.ahmadaslam2003@gmail.com",
-          message: data.message,
-          "g-recaptcha-response": token,
-        },
-        { publicKey: PUBLIC_KEY }
-      );
+      const params: Record<string, string> = {
+        name: data.name,
+        from_name: data.name,
+        to_name: "Muhammad Ahmad Aslam",
+        email: data.email,
+        from_email: data.email, // the var the actual template reads; without it the email came through empty
+        reply_to: data.email,
+        user_email: data.email,
+        to_email: "muhammad.ahmadaslam2003@gmail.com",
+        // optional: blank unless the visitor fills it in. To see it in the received
+        // email, add {{phone}} to your EmailJS template — otherwise it's ignored harmlessly.
+        phone: data.phone?.trim() || "Not provided",
+        user_phone: data.phone?.trim() || "Not provided",
+        message: data.message,
+      };
+      // Only attach a reCAPTCHA token when we actually have one. Sending an empty
+      // "g-recaptcha-response" makes EmailJS reject the whole request when the
+      // template has reCAPTCHA protection turned on — a silent, common cause of failure.
+      if (token) params["g-recaptcha-response"] = token;
+
+      await emailjs.send(SERVICE_ID, TEMPLATE_ID, params, { publicKey: PUBLIC_KEY });
       setStatus("sent");
       form.reset();
       setErrors({});
       celebrate();
-    } catch {
+    } catch (err) {
+      // EmailJS rejects with an { status, text } object. Surface it so a failure is
+      // diagnosable (check the console) instead of a blank "something went wrong".
+      // The detailed message is shown in the UI only in development.
+      const e = err as { status?: number; text?: string };
+      console.error("EmailJS send failed:", e?.status ?? "", e?.text ?? err);
       setStatus("error");
-      setServerError("Something went wrong. Try email instead.");
+      setServerError(
+        process.env.NODE_ENV === "development" && (e?.text || e?.status)
+          ? `EmailJS error ${e.status ?? ""}: ${e.text ?? "see console"}`
+          : "Something went wrong. Try email instead."
+      );
     }
   }
 
@@ -149,7 +162,7 @@ export function ContactForm() {
       <div className="grid gap-5 sm:grid-cols-2">
         <div className="space-y-2">
           <label htmlFor="name" className={label}>
-            Name
+            Name <span aria-hidden="true" className="text-ember">*</span>
           </label>
           <input
             id="name"
@@ -169,7 +182,7 @@ export function ContactForm() {
         </div>
         <div className="space-y-2">
           <label htmlFor="email" className={label}>
-            Email
+            Email <span aria-hidden="true" className="text-ember">*</span>
           </label>
           <input
             id="email"
@@ -191,8 +204,24 @@ export function ContactForm() {
       </div>
 
       <div className="space-y-2">
+        <label htmlFor="phone" className={label}>
+          Phone{" "}
+          <span className="normal-case tracking-normal text-muted">(optional)</span>
+        </label>
+        <input
+          id="phone"
+          name="phone"
+          type="tel"
+          inputMode="tel"
+          autoComplete="tel"
+          className={field}
+          placeholder="+1 555 000 1234"
+        />
+      </div>
+
+      <div className="space-y-2">
         <label htmlFor="message" className={label}>
-          Message
+          Message <span aria-hidden="true" className="text-ember">*</span>
         </label>
         <textarea
           id="message"

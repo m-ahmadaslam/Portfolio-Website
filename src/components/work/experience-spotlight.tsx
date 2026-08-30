@@ -40,7 +40,7 @@ export function ExperienceSpotlight() {
 
           <div>
             <h3 className="font-display text-xl font-semibold tracking-tight text-bone sm:text-2xl">
-              {e.role}
+              <span className="text-gradient-violet">{e.role}</span>
               <span className="text-muted"> · {e.company}</span>
             </h3>
             <p className="mt-2 text-[0.97rem] text-bone-dim">{e.summary}</p>

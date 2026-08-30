@@ -11,11 +11,11 @@ import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { Box3, Mesh, Vector3 } from "three";
 import type { Group, MeshPhysicalMaterial } from "three";
 
-const URL = "/models/central-brain.glb?v=1"; // swap this one path to use a different rig
+const URL = "/models/central-brain.glb?v=3"; // v3: Draco geometry compression (~12.5MB -> ~4MB). v2 was the 2K->1K texture downscale.
 
 const TARGET_SIZE = 2.4; // normalized max dimension (world units) before the responsive multiplier
 
-function Model({ scale }: { scale: number }) {
+function Model({ scale, onReady }: { scale: number; onReady?: () => void }) {
   const ref = useRef<Group>(null);
   const { scene } = useGLTF(URL);
 
@@ -32,8 +32,16 @@ function Model({ scale }: { scale: number }) {
         const m = raw as MeshPhysicalMaterial;
         if (!m || m.userData.__tuned) continue;
         m.userData.__tuned = true;
-        // let every surface catch the synthetic violet/cyan environment below
+        // let every surface catch the synthetic violet environment below
         if ("envMapIntensity" in m) m.envMapIntensity = 1.6;
+        // the "podklad" base is a bright white/cyan starburst pedestal. calm it just
+        // enough that it stops reading as its own separate lit stage, but keep it bright:
+        // the Thalamus label sits directly on this light, so it needs to stay luminous.
+        const name = (m.name || "").toLowerCase();
+        if (name.includes("podklad")) {
+          if (typeof m.emissiveIntensity === "number") m.emissiveIntensity *= 0.72;
+          if ("envMapIntensity" in m) m.envMapIntensity = 0.9;
+        }
         const isGlass =
           m.transparent === true || (typeof m.opacity === "number" && m.opacity < 0.9);
         if (!isGlass) continue;
@@ -55,6 +63,20 @@ function Model({ scale }: { scale: number }) {
     return TARGET_SIZE / maxDim;
   }, [scene]);
 
+  // signal the poster overlay to cross-fade out once the model is actually on screen.
+  // useGLTF suspends, so this component only mounts after the GLB has loaded; the rAF
+  // waits one paint so the fade reveals a rendered model, not an empty canvas. keep the
+  // callback in a ref (updated in its own effect, not during render) so the rAF effect
+  // can stay mount-only and fire onReady exactly once.
+  const readyCb = useRef(onReady);
+  useEffect(() => {
+    readyCb.current = onReady;
+  });
+  useEffect(() => {
+    const id = requestAnimationFrame(() => readyCb.current?.());
+    return () => cancelAnimationFrame(id);
+  }, []);
+
   // slow idle rotation so the sculpture reads as alive without spinning away
   useFrame((state) => {
     const g = ref.current;
@@ -75,23 +97,31 @@ function Model({ scale }: { scale: number }) {
 }
 useGLTF.preload(URL);
 
-// transparent canvas; a synthetic violet/cyan environment gives the glass something to
-// refract, a rim light behind traces its edges, and bloom lifts the inner glow into theme
-export default function PcScene({ active = true }: { active?: boolean }) {
+// transparent canvas; a synthetic violet environment gives the glass something to
+// refract, a rim light behind traces its edges, and a soft bloom lifts the inner glow
+export default function PcScene({
+  active = true,
+  onReady,
+}: {
+  active?: boolean;
+  onReady?: () => void;
+}) {
   // touch devices get the idle spin only, so a swipe scrolls the page instead of
   // grabbing the model; mouse-drag orbit stays on pointer-fine desktops. slightly
-  // bigger model on phones now that the mobile hero has the room.
-  const [isTouch, setIsTouch] = useState(false);
-  const [scale, setScale] = useState(1.3);
-  useEffect(() => {
-    setIsTouch(window.matchMedia("(any-pointer: coarse)").matches);
-    setScale(window.matchMedia("(max-width: 1024px)").matches ? 1.5 : 1.3);
-  }, []);
+  // bigger model on phones now that the mobile hero has the room. (ssr:false import,
+  // so window is available at first render -> read it in the initializer, no flip.)
+  const [isTouch] = useState(
+    () => typeof window !== "undefined" && window.matchMedia("(any-pointer: coarse)").matches
+  );
+  const [scale] = useState(() =>
+    typeof window !== "undefined" && window.matchMedia("(max-width: 1024px)").matches ? 1.5 : 1.3
+  );
 
   return (
     <Canvas
       frameloop={active ? "always" : "never"}
-      dpr={[1, 1.6]}
+      // phones cap lower: fewer pixels to shade = faster first frame and smoother spin
+      dpr={[1, isTouch ? 1.3 : 1.6]}
       gl={{ antialias: true, powerPreference: "high-performance", alpha: true }}
       camera={{ position: [0, 2.59, 9.67], fov: 28 }} // starts at the lower tilt (min polar)
       onCreated={({ gl, scene }) => {
@@ -112,15 +142,16 @@ export default function PcScene({ active = true }: { active?: boolean }) {
       <pointLight position={[0, 3, -6]} intensity={60} color="#8b6dff" />
 
       {/* baked once (frames={1}), no network fetch: gives the transmissive glass real
-          reflections to catch, which is what actually makes glass legible */}
+          reflections to catch. kept all-violet so nothing reflects a stray teal cast that
+          would read as a different palette from the page. */}
       <Environment resolution={256} frames={1}>
         <Lightformer intensity={2.4} color="#8b6dff" position={[-5, 3, -4]} scale={[9, 9, 1]} />
-        <Lightformer intensity={1.5} color="#22d3ee" position={[5, -2, -3]} scale={[6, 6, 1]} />
+        <Lightformer intensity={1.3} color="#6b4fd8" position={[5, -2, -3]} scale={[6, 6, 1]} />
         <Lightformer intensity={2} color="#ffffff" position={[0, 5, 2]} scale={[10, 3, 1]} />
       </Environment>
 
       <Suspense fallback={null}>
-        <Model scale={scale} />
+        <Model scale={scale} onReady={onReady} />
       </Suspense>
 
       {!isTouch && (
@@ -133,12 +164,17 @@ export default function PcScene({ active = true }: { active?: boolean }) {
         />
       )}
 
-      {/* no Vignette here on purpose: a vignette darkens the frame edges, which is
-          exactly what made the canvas read as a separate box against the page. */}
-      <EffectComposer multisampling={0} enableNormalPass={false}>
-        <BrightnessContrast brightness={0.02} contrast={0.08} />
-        <Bloom mipmapBlur intensity={0.85} luminanceThreshold={0.5} luminanceSmoothing={0.3} />
-      </EffectComposer>
+      {/* Postprocessing is desktop-only: on phones it is the most expensive pass and the
+          first thing to delay the first frame, and its glow is also what most made the
+          model read as a separate lit box. Softer + higher threshold on desktop so only
+          the brightest speculars bloom, letting the model melt into the page. No Vignette
+          on purpose: it darkens frame edges, which is what made the canvas look like a box. */}
+      {!isTouch && (
+        <EffectComposer multisampling={0} enableNormalPass={false}>
+          <BrightnessContrast brightness={0.0} contrast={0.05} />
+          <Bloom mipmapBlur intensity={0.5} luminanceThreshold={0.72} luminanceSmoothing={0.4} />
+        </EffectComposer>
+      )}
     </Canvas>
   );
 }

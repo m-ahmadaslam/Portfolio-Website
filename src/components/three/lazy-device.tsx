@@ -6,9 +6,9 @@ import { Component, useEffect, useRef, useState, type ReactNode } from "react";
 // chunk only loads when rendered, so low-power devices never download three
 const PcScene = dynamic(() => import("./pc-scene"), { ssr: false });
 
-// the poster is just a fallback now: genuinely weak hardware here, plus a webgl/chunk
-// load failure via the boundary below. every capable device gets the live spinning 3d,
-// reduced-motion included (intentional: the hero spin is the brand, by owner's call).
+// the poster is only a fallback now: genuinely weak hardware stays on it, as does a
+// webgl/chunk load failure via the boundary below. every capable device goes straight
+// to the live 3d with no placeholder flashing in front of it first.
 function lowPower() {
   return (navigator.hardwareConcurrency ?? 8) <= 2;
 }
@@ -68,7 +68,12 @@ export function LazyDevice({ poster }: { poster: string }) {
 
   return (
     <div ref={ref} className="absolute inset-0">
+      {/* low-power devices: just the poster, no three chunk downloaded at all */}
       {mode === "static" && posterImg}
+
+      {/* capable devices: the live model, nothing layered on top of it. the canvas is
+          transparent, so until the GLB paints its first frame this space simply stays
+          empty (the hero's avatar bubble sits above it) rather than flashing a placeholder. */}
       {mode === "3d" && show && (
         <SceneBoundary fallback={posterImg}>
           <PcScene active={active} />

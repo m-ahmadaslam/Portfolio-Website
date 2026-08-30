@@ -1,6 +1,7 @@
 import { Container, Eyebrow, SectionHeading } from "@/components/ui/primitives";
 import { Reveal } from "@/components/ui/reveal";
 import { skills as skillGroups } from "@/content/site";
+import { SkillChip } from "@/components/ui/skills-grid";
 import { LazySkills } from "@/components/three/lazy-skills";
 
 // home "stack" section: the categorised skill list paired with the interactive 3D
@@ -13,27 +14,22 @@ export function Skills() {
         <div className="mt-6 grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
           <div>
             <SectionHeading className="max-w-md">
-              The tools I reach for.
+              The <span className="text-gradient-violet">tools I reach for.</span>
             </SectionHeading>
             <p className="mt-4 max-w-md text-bone-dim">
               One stack from the interface to the model: typed web apps, the services
               behind them, and the applied ML and agent tooling layered on top.
             </p>
-            <div className="mt-9 grid gap-x-8 gap-y-7 sm:grid-cols-2">
+            <div className="mt-8 grid gap-x-6 gap-y-5 sm:grid-cols-2">
               {skillGroups.map((g, i) => (
                 <Reveal key={g.group} delay={i * 0.05}>
-                  <h3 className="flex items-center gap-2.5 font-mono text-xs uppercase tracking-[0.18em] text-bone">
+                  <h3 className="flex items-center gap-2.5 font-mono text-xs uppercase tracking-[0.18em]">
                     <span className="h-px w-4 bg-ember" aria-hidden />
-                    {g.group}
+                    <span className="text-gradient-violet">{g.group}</span>
                   </h3>
-                  <ul className="mt-3.5 flex flex-wrap gap-2 font-mono text-[0.78rem]">
+                  <ul className="mt-3 flex flex-wrap gap-1.5 font-mono text-[0.7rem]">
                     {g.items.map((it) => (
-                      <li
-                        key={it}
-                        className="rounded-sm bg-surface px-2.5 py-1 text-bone-dim"
-                      >
-                        {it}
-                      </li>
+                      <SkillChip key={it} name={it} compact />
                     ))}
                   </ul>
                 </Reveal>
