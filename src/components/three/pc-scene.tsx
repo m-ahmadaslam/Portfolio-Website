@@ -28,13 +28,21 @@ function Model({
   const { scene } = useGLTF(URL);
   const gl = useThree((s) => s.gl);
 
+  // useGLTF caches and REUSES one scene object across every mount. <primitive> writes the
+  // fit scale straight onto that shared object, so on a later mount `setFromObject` could
+  // measure an already-scaled scene and compute the wrong fit — that's why the model
+  // sometimes loaded oversized and corrected itself on the next reload. Clone per mount so
+  // we always scale + measure a pristine copy (materials stay shared by reference, which is
+  // what the one-time `__tuned` guard below relies on).
+  const model = useMemo(() => scene.clone(true), [scene]);
+
   // The sculpture's geometry stays exactly as authored, but its glass is near-black at
   // low opacity and disappears against the dark hero. Lift it once on load: a violet
   // self-glow, a little more body, and stronger reflections, so the brain's silhouette
   // reads cleanly instead of blending into the background. (Guarded so it runs once even
-  // though useGLTF caches and reuses this scene across mounts.)
+  // though the materials are shared across mounts.)
   const fit = useMemo(() => {
-    scene.traverse((o) => {
+    model.traverse((o) => {
       if (!(o instanceof Mesh)) return;
       const mats = Array.isArray(o.material) ? o.material : [o.material];
       for (const raw of mats) {
@@ -67,10 +75,10 @@ function Model({
         m.needsUpdate = true;
       }
     });
-    const size = new Box3().setFromObject(scene).getSize(new Vector3());
+    const size = new Box3().setFromObject(model).getSize(new Vector3());
     const maxDim = Math.max(size.x, size.y, size.z) || 1;
     return TARGET_SIZE / maxDim;
-  }, [scene]);
+  }, [model]);
 
   // signal the poster overlay to cross-fade out once the model is actually on screen.
   // useGLTF suspends, so this component only mounts after the GLB has loaded; the rAF
@@ -150,7 +158,7 @@ function Model({
     // offset lives OUTSIDE <Center> so centering doesn't cancel it; spin stays on the inner group.
     <Center position={[0, 0.8, 0]}>
       <group ref={ref}>
-        <primitive object={scene} scale={fit * scale} />
+        <primitive object={model} scale={fit * scale} />
       </group>
     </Center>
   );
