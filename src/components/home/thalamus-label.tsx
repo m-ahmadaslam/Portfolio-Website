@@ -11,7 +11,7 @@
 //   DOT_TOP    — the brain's neural centre; the leader line starts here.
 //   LIGHT_TOP  — the white pedestal light; the label text sits here.
 const DOT_TOP = "31%";
-const LIGHT_TOP = "70%";
+const LIGHT_TOP = "73%";
 
 export function ThalamusLabel() {
   return (
