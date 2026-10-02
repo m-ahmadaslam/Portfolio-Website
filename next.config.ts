@@ -31,6 +31,7 @@ const nextConfig: NextConfig = {
       { source: "/:path*", headers: securityHeaders },
       { source: "/assets/:path*", headers: [immutable] },
       { source: "/models/:path*", headers: [immutable] },
+      { source: "/draco/:path*", headers: [immutable] },
       {
         // pdfs keep stable share-link names, so a short ttl over immutable
         source: "/:file*.pdf",

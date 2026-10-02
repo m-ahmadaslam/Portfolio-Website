@@ -2,16 +2,18 @@
 
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Center, Environment, Lightformer, OrbitControls, useGLTF } from "@react-three/drei";
-import {
-  EffectComposer,
-  Bloom,
-  BrightnessContrast,
-} from "@react-three/postprocessing";
-import { Suspense, useEffect, useMemo, useRef, useState } from "react";
+import { Suspense, lazy, useEffect, useMemo, useRef, useState } from "react";
 import { Box3, Mesh, Vector3 } from "three";
 import type { Group, MeshPhysicalMaterial } from "three";
 
+// lazy: `@react-three/postprocessing` only downloads for the desktop visitors who actually
+// render it (see the `!isTouch` gate below) — phones never fetch this chunk at all.
+const PcEffects = lazy(() => import("./pc-effects"));
+
 const URL = "/models/central-brain.glb?v=3"; // v3: Draco geometry compression (~12.5MB -> ~4MB). v2 was the 2K->1K texture downscale.
+// self-hosted decoder (copied from three/examples/jsm/libs/draco/gltf) so the model never
+// waits on a cross-origin round trip to Google's CDN for the wasm decoder.
+const DRACO_PATH = "/draco/";
 
 const TARGET_SIZE = 2.4; // normalized max dimension (world units) before the responsive multiplier
 
@@ -25,7 +27,7 @@ function Model({
   isTouch?: boolean;
 }) {
   const ref = useRef<Group>(null);
-  const { scene } = useGLTF(URL);
+  const { scene } = useGLTF(URL, DRACO_PATH);
   const gl = useThree((s) => s.gl);
 
   // useGLTF caches and REUSES one scene object across every mount. <primitive> writes the
@@ -163,7 +165,7 @@ function Model({
     </Center>
   );
 }
-useGLTF.preload(URL);
+useGLTF.preload(URL, DRACO_PATH);
 
 // transparent canvas; a synthetic violet environment gives the glass something to
 // refract, a rim light behind traces its edges, and a soft bloom lifts the inner glow
@@ -233,15 +235,12 @@ export default function PcScene({
       )}
 
       {/* Postprocessing is desktop-only: on phones it is the most expensive pass and the
-          first thing to delay the first frame, and its glow is also what most made the
-          model read as a separate lit box. Softer + higher threshold on desktop so only
-          the brightest speculars bloom, letting the model melt into the page. No Vignette
-          on purpose: it darkens frame edges, which is what made the canvas look like a box. */}
+          first thing to delay the first frame. Lazy-imported (see PcEffects above) so the
+          `@react-three/postprocessing` chunk is never even downloaded on touch devices. */}
       {!isTouch && (
-        <EffectComposer multisampling={0} enableNormalPass={false}>
-          <BrightnessContrast brightness={0.0} contrast={0.05} />
-          <Bloom mipmapBlur intensity={0.5} luminanceThreshold={0.72} luminanceSmoothing={0.4} />
-        </EffectComposer>
+        <Suspense fallback={null}>
+          <PcEffects />
+        </Suspense>
       )}
     </Canvas>
   );

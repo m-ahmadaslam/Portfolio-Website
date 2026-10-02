@@ -3,16 +3,17 @@
 import { useRef, useState } from "react";
 import { Pause, Play, Volume2, VolumeX } from "lucide-react";
 
-// A circular talking-head intro that sits on top of the 3D hero. It autoplays muted +
-// looped (browsers block autoplay with sound). Two controls straddle the lower edge:
-// play/pause on the left, mute/unmute on the right.
+// A circular talking-head intro that sits on top of the 3D hero. It starts paused, on
+// its poster frame, with sound on, so nothing plays until the visitor chooses to hit
+// play (a user-initiated play is never blocked by autoplay-with-sound restrictions).
+// Two controls straddle the lower edge: play/pause on the left, mute/unmute on the right.
 //
 // `size` is the circle diameter in px; the buttons and their icons scale with it, so a
 // single number controls the whole medallion.
 export function AvatarBubble({ size = 180 }: { size?: number }) {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [muted, setMuted] = useState(true);
-  const [playing, setPlaying] = useState(true);
+  const [muted, setMuted] = useState(false);
+  const [playing, setPlaying] = useState(false);
 
   // buttons + icons derive from `size` so everything grows/shrinks together
   const btn = Math.max(30, Math.round(size * 0.22));
@@ -53,8 +54,7 @@ export function AvatarBubble({ size = 180 }: { size?: number }) {
           className="h-full w-full object-cover"
           src="/assets/avatar-intro.mp4"
           poster="/assets/avatar-intro-poster.webp"
-          autoPlay
-          muted
+          muted={muted}
           loop
           playsInline
           preload="metadata"

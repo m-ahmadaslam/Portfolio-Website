@@ -53,23 +53,32 @@ export function LazySkills() {
   const ref = useRef<HTMLDivElement>(null);
   const [mode, setMode] = useState<"loading" | "static" | "3d">("loading");
   const [show, setShow] = useState(false);
-  const [active, setActive] = useState(true);
+  // starts false: the scene now mounts immediately (likely off-screen, below the fold), so
+  // the frameloop should stay idle until the visibility observer below confirms it's on screen.
+  const [active, setActive] = useState(false);
 
-  useEffect(() => setMode(lowPower() ? "static" : "3d"), []);
+  // mounts immediately on load (not gated behind scroll position) so the chunk fetch,
+  // geometry/texture construction and WebGL context creation are all done well before the
+  // visitor ever scrolls this far — by the time the section is in view there's nothing
+  // left to build. `active` (below) still keeps the frameloop off until it's genuinely on
+  // screen, so this costs one-time construction, not continuous rendering, while off-screen.
+  useEffect(() => {
+    const capable = !lowPower();
+    setMode(capable ? "3d" : "static");
+    if (capable) setShow(true);
+  }, []);
 
+  // tight-margin observer for the frameloop: only actually render frames while the
+  // section is genuinely on screen.
   useEffect(() => {
     if (mode !== "3d" || !ref.current) return;
     const el = ref.current;
     let inView = false;
     const recompute = () => setActive(inView && !document.hidden);
-    const io = new IntersectionObserver(
-      ([entry]) => {
-        inView = entry.isIntersecting;
-        if (entry.isIntersecting) setShow(true);
-        recompute();
-      },
-      { rootMargin: "200px 0px" }
-    );
+    const io = new IntersectionObserver(([entry]) => {
+      inView = entry.isIntersecting;
+      recompute();
+    });
     io.observe(el);
     document.addEventListener("visibilitychange", recompute);
     return () => {
